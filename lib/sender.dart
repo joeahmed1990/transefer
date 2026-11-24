@@ -84,16 +84,16 @@ class _SenderPageState extends State<SenderPage> {
   }
 
   Future<void> _sendFiles() async {
-    final r = await FilePicker.platform.pickFiles(allowMultiple: true);
-    if (r == null) return;
+    final files = await FilePicker.pickFiles();
+    if (files.isEmpty) return;
     await _upload([
-      for (final f in r.files)
+      for (final f in files)
         if (f.path != null) _Item(File(f.path!), f.name)
     ]);
   }
 
   Future<void> _sendFolder() async {
-    final dir = await FilePicker.platform.getDirectoryPath();
+    final dir = await FilePicker.getDirectoryPath();
     if (dir == null) return;
     final base = p.basename(dir);
     final items = <_Item>[];
