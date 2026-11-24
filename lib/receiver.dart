@@ -76,7 +76,9 @@ class _ReceiverPageState extends State<ReceiverPage> {
       }
       final file = File(p.joinAll([saveDir.path, ...parts]));
       await file.parent.create(recursive: true);
-      await req.pipe(file.openWrite()); // بث مباشر للقرص، مفيش تحميل في الرام
+      final sink = file.openWrite();
+      await sink.addStream(req); // بث مباشر للقرص، مفيش تحميل في الرام
+      await sink.close();
       if (mounted) setState(() => log.insert(0, '✓ ${parts.join('/')}'));
     } catch (e) {
       res.statusCode = 500;
